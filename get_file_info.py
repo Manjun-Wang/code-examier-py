@@ -16,10 +16,7 @@ def main(argv=None):
         try:
             opts, args = getopt.getopt(argv[1:], "h", ["help", "file=", "language=", "dir="])
 
-            print(opts, args)
-            options = get_correct_opts(opts)
-
-            print(options)
+            get_file_list_from_options(get_correct_opts(opts))
         except getopt.error as msg:
             raise Usage(msg)
         # more code, unchanged
@@ -33,11 +30,11 @@ def get_correct_opts(opts):
     options = {}
     for opt in opts:
         if opt[0] == "--file":
-            options["file"] = opt[1]
+            options["file"] = opt[1].split(",")
         if opt[0] == "--dir":
-            options["dir"] = opt[1]
+            options["dir"] = opt[1].split(",")
         if opt[0] == "--language":
-            options["language"] = opt[1]
+            options["language"] = opt[1].split(",")
     if len(options) != 3:
         raise Usage("Need to have --file=x and --language=y as input params")
     return options
@@ -47,21 +44,39 @@ def get_file_list_from_options(options):
     """
     options contain dir or just file, the func will return a list of file paths
     """
-    files = []
+    out_put_files = []
+    file_suffixes = options["language"]
+
     if "dir" in options:
-        files += list(pathlib.Path(options["dir"]).rglob("*.py"))
-    print(line_counter(files))
+        for directory in options["dir"]:
+            for suffix in file_suffixes:
+                out_put_files += list(pathlib.Path(directory).rglob("*" + suffix))
+
+    print(line_counter(out_put_files))
+
+
+def remove_lines_by_file_suffix(lines, suffix):
+    """
+    reserved function for suffix based filtering.
+    :param lines:
+    :param suffix:
+    :return:
+    """
+    print(lines, suffix)
+    # if suffix == ".py":
+    #     lines.remove()
+    return lines
 
 
 def line_counter(files):
-    lines = []
+    result_lines = []
     for f in files:
-        lines += open(str(f)).readlines()
+        lines = open(str(f)).readlines()
+        new_lines = list(filter(lambda x: line_filter_manager(x), list(map(lambda line: line.strip(" \n\t"), lines))))
+        result_lines += remove_lines_by_file_suffix(new_lines, f.suffix)
 
-    new_lines = list(filter(lambda x: line_filter_manager(x), list(map(lambda line: line.strip(" \n\t"), lines))))
-
-    print(new_lines)
-    return len(new_lines)
+    print(result_lines)
+    return len(result_lines)
 
 
 def line_filter_manager(line):
@@ -71,17 +86,17 @@ def line_filter_manager(line):
         opt_out = True
 
     if "import" in line:
-        opt_out = True
+        opt_out = False
 
     return opt_out
 
 
 if __name__ == "__main__":
     # sys.exit(main())
-    options = {
-        "language": ".py",
-        "dir": "/Users/manman/PycharmProjects/untitled1/com",
-        "file": "/Users/manman/PycharmProjects/untitled1/com/__init__.py"
+    test_options = {
+        "language": [".py", ".java"],
+        "dir": ["/Users/manman/PycharmProjects/untitled1/com"],
+        "file": ["/Users/manman/PycharmProjects/untitled1/com/__init__.py"]
     }
 
-    get_file_list_from_options(options)
+    get_file_list_from_options(test_options)
