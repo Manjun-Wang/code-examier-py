@@ -68,33 +68,40 @@ def remove_lines_by_file_suffix(lines, suffix):
     return lines
 
 
+def suffix_processor(line, suffix):
+    if suffix == ".py":
+        return "import" not in line
+    if suffix == ".html":
+        return True
+
+
 def line_counter(files):
     result_lines = []
     for f in files:
         lines = open(str(f)).readlines()
-        new_lines = list(filter(lambda x: line_filter_manager(x), list(map(lambda line: line.strip(" \n\t"), lines))))
-        result_lines += remove_lines_by_file_suffix(new_lines, f.suffix)
+        result_lines += list(filter(lambda x: line_filter_manager(x, f.suffix), list(map(lambda line: line.strip(" \n\t"), lines))))
 
     print(result_lines)
     return len(result_lines)
 
 
-def line_filter_manager(line):
-    opt_out = False
-
+def line_filter_manager(line, suffix):
+    """
+    Return True to keep the result and False to opt out
+    :param line:
+    :param suffix:
+    :return:
+    """
     if line != '':
-        opt_out = True
+        return suffix_processor(line, suffix)
 
-    if "import" in line:
-        opt_out = False
-
-    return opt_out
+    return False
 
 
 if __name__ == "__main__":
     # sys.exit(main())
     test_options = {
-        "language": [".py", ".java"],
+        "language": [".py", ".html"],
         "dir": ["/Users/manman/PycharmProjects/untitled1/com"],
         "file": ["/Users/manman/PycharmProjects/untitled1/com/__init__.py"]
     }
