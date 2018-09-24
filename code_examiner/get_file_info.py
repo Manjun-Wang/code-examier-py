@@ -56,7 +56,8 @@ def get_file_list_from_options(options):
             for suffix in file_suffixes:
                 out_put_files += list(pathlib.Path(directory).rglob("*" + suffix))
 
-    print(line_counter(out_put_files))
+    count_result = line_counter(out_put_files)
+    print_line_count_result(count_result)
 
 
 def remove_lines_by_file_suffix(lines, suffix):
@@ -81,12 +82,30 @@ def suffix_processor(line, suffix):
 
 def line_counter(files):
     result_lines = []
+    total_lines = []
     for f in files:
         lines = open(str(f)).readlines()
-        result_lines += list(filter(lambda x: line_filter_manager(x, f.suffix), list(map(lambda line: line.strip(" \n\t"), lines))))
+        line_lst = list(map(lambda line: line.strip(" \n\t"), lines))
+        total_lines += lines
+        result_lines += list(filter(lambda x: line_filter_manager(x, f.suffix), line_lst))
 
-    print(result_lines)
-    return len(result_lines)
+    return {
+        "total_lines": total_lines,
+        "filtered_lines": result_lines,
+        "core_lines": result_lines,
+        "files": files
+    }
+
+
+def print_line_count_result(result):
+    filtered = len(result["filtered_lines"])
+    total = len(result["total_lines"])
+    core = len(result["core_lines"])
+    print("Total Files Number: ", len(result["files"]))
+    print("File details: ", result["files"])
+    print("Total lines Before: ", total)
+    print("Filtered lines (", "{0:.0%}".format(filtered/total), ") : ", filtered)
+    print("Core logic (", "{0:.0%}".format(core/total), ") : ", core)
 
 
 def line_filter_manager(line, suffix):
