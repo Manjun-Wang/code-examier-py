@@ -1,6 +1,11 @@
 # code-examier-py
 a bundle of python tools to check code quality
 
+## Tech stack
+python3
+
+setupy and pip
+
 ## How to run
 ```
 manman$ pip install .
@@ -22,3 +27,5 @@ Filtered lines ( 74% ) :  99
 Core logic ( 74% ) :  99
 --------------------------
 ```
+
+
