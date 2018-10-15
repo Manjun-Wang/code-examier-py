@@ -1,1 +1,1 @@
-from .get_file_info import exam
+from .get_file_info import exa
