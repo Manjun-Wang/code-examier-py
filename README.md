@@ -1,4 +1,4 @@
-# code-examier-py
+# code-examier-p
 a bundle of python tools to check code quality
 
 ## Tech stack
