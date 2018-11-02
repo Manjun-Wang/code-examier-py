@@ -9,4 +9,4 @@ setup(name='code_examiner',
       license='MIT',
       scripts=['bin/code_exam'],
       packages=['code_examiner'],
-      zip_safe=False
+      zip_safe=False）
