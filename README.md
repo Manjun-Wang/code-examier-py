@@ -1,5 +1,5 @@
 # code-examier-py
-a bundle of python tools to check code quality
+a bundle of python tools to check code qualit
 
 ## Tech stack
 python3
