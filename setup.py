@@ -1,4 +1,4 @@
-from setuptools import setu
+from setuptools import set
 
 setup(name='code_examiner',
       version='0.1',
