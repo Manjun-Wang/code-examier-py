@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import code_examiner
+import code_examine
 import sys
 import getopt
 
